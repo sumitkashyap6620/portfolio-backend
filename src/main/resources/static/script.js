@@ -52,42 +52,25 @@ if (contactForm) {
         if (submitButton) submitButton.disabled = true;
 
         if (formStatus) {
-            formStatus.textContent = "Sending message...";
+            formStatus.textContent = "Sending message... (Server might take a few seconds if waking up)";
             formStatus.style.color = "blue";
         }
 
         try {
-   try {
-    const response = await fetch(
-        "https://portfolio-backend-1-i1cy.onrender.com/api/contact",
-        {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ name, email, message })
-        }
-    );
-
-    if (response.ok) {
-        alert("Message sent successfully!");
-    } else {
-        alert("Server error occurred.");
-    }
-} catch (error) {
-    console.error("Connection failed:", error);
-    alert("Connection failed. Render server might be waking up, please try again in 30 seconds.");
-}
+            const response = await fetch(
+                "https://portfolio-backend-1-i1cy.onrender.com/api/contact",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ name, email, message })
+                }
+            );
 
             if (!response.ok) {
                 const errorDetails = await response.text();
-
-                console.error(
-                    "API error:",
-                    response.status,
-                    errorDetails
-                );
-
+                console.error("API error:", response.status, errorDetails);
                 throw new Error(`HTTP ${response.status}`);
             }
 
@@ -96,19 +79,17 @@ if (contactForm) {
                 formStatus.style.color = "green";
             }
 
+            alert("Message sent successfully!");
             contactForm.reset();
 
         } catch (error) {
             console.error("Contact form error:", error);
 
             if (formStatus) {
-                formStatus.textContent =
-                    error.message.startsWith("HTTP ")
-                        ? `Failed to send message (${error.message}).`
-                        : "Connection failed. Please check the backend and CORS settings.";
-
+                formStatus.textContent = "Connection failed. Render server might be waking up, please try again in 30 seconds.";
                 formStatus.style.color = "red";
             }
+            alert("Connection failed. Render free server goes to sleep when idle. Please try submitting again in 30 seconds.");
 
         } finally {
             if (submitButton) {

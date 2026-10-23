@@ -1,8 +1,9 @@
 package com.example.portfolio_backend.repository;
 
-import com.example.portfolio_backend.entnty.ContactMessage;
+import com.example.portfolio_backend.entity.ContactMessage;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface ContactMessageRepository
-        extends JpaRepository<ContactMessage, Long> {
+@Repository
+public interface ContactMessageRepository extends JpaRepository<ContactMessage, Long> {
 }
