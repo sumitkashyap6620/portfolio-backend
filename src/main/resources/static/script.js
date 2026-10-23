@@ -24,15 +24,6 @@ document.getElementById("year").textContent =
 
 
 // We will connect this to the Spring Boot API later.
-const contactForm = document.getElementById("contactForm");
-const formStatus = document.getElementById("formStatus");
-
-contactForm.addEventListener("submit", (event) => {
-    event.preventDefault();
-    formStatus.textContent =
-        "Frontend is working! Backend connection will be added in the next steps.";
-});
-
 
 document.addEventListener("DOMContentLoaded", function() {
     // HTML ke ID 'contactForm' se exact match kar diya hai
