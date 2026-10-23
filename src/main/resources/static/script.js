@@ -57,16 +57,27 @@ if (contactForm) {
         }
 
         try {
-            const response = await fetch(
-                "https://portfolio-backend-9r2w.onrender.com/api/contact",
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({ name, email, message })
-                }
-            );
+   try {
+    const response = await fetch(
+        "https://portfolio-backend-1-i1cy.onrender.com/api/contact",
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ name, email, message })
+        }
+    );
+
+    if (response.ok) {
+        alert("Message sent successfully!");
+    } else {
+        alert("Server error occurred.");
+    }
+} catch (error) {
+    console.error("Connection failed:", error);
+    alert("Connection failed. Render server might be waking up, please try again in 30 seconds.");
+}
 
             if (!response.ok) {
                 const errorDetails = await response.text();
