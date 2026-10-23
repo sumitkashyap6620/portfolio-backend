@@ -58,7 +58,7 @@ if (contactForm) {
 
         try {
            const response = await fetch(
-    "https://portfolio-backend-1-i1cy.onrender.com/api/contact",
+    "https://portfolio-backend-1-i1cy.onrender.com/contact",
     {
         method: "POST",
         headers: {
