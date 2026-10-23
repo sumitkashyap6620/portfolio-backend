@@ -57,16 +57,16 @@ if (contactForm) {
         }
 
         try {
-            const response = await fetch(
-                "https://portfolio-backend-1-i1cy.onrender.com/api/contact",
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({ name, email, message })
-                }
-            );
+           const response = await fetch(
+    "https://portfolio-backend-1-i1cy.onrender.com/api/contact",
+    {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ name, email, message })
+    }
+);
 
             if (!response.ok) {
                 const errorDetails = await response.text();
