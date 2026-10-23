@@ -57,7 +57,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
             try {
                 // Spring Boot backend ko data bhejna
-               const response = await fetch('https://portfolio-backend-6-uyaf.onrender.com/api/contact', {
+               const response = await fetch('https://portfolio-backend-9r2w.onrender.com/api/contact', {
                 method: 'POST',
                 headers: {
                 'Content-Type': 'application/json'
