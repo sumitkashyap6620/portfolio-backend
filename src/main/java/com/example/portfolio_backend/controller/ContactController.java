@@ -1,51 +1,107 @@
-package com.example.portfolio_backend.controller;
+const menuToggle = document.getElementById("menuToggle");
+const navLinks = document.getElementById("navLinks");
 
-import com.example.portfolio_backend.entnty.ContactMessage;
-import com.example.portfolio_backend.repository.ContactMessageRepository;
+// Mobile navigation
+if (menuToggle && navLinks) {
+    menuToggle.addEventListener("click", () => {
+        const isOpen = navLinks.classList.toggle("open");
+        menuToggle.setAttribute("aria-expanded", String(isOpen));
+        menuToggle.textContent = isOpen ? "✕" : "☰";
+    });
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+    navLinks.querySelectorAll("a").forEach((link) => {
+        link.addEventListener("click", () => {
+            navLinks.classList.remove("open");
+            menuToggle.setAttribute("aria-expanded", "false");
+            menuToggle.textContent = "☰";
+        });
+    });
+}
 
-@RestController
-@RequestMapping("/api/contact")
-@CrossOrigin(origins = "*")
-public class ContactController {
+// Footer year
+const yearElement = document.getElementById("year");
 
-    private final ContactMessageRepository repository;
+if (yearElement) {
+    yearElement.textContent = new Date().getFullYear();
+}
 
-    public ContactController(ContactMessageRepository repository) {
-        this.repository = repository;
-    }
+// Contact form
+const contactForm = document.getElementById("contactForm");
+const formStatus = document.getElementById("formStatus");
 
-    @PostMapping
-    public ResponseEntity<String> submitContact(
-            @RequestBody ContactMessage contact) {
+if (contactForm) {
+    contactForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
 
-        if (contact.getName() == null
-                || contact.getName().isBlank()
-                || contact.getEmail() == null
-                || contact.getEmail().isBlank()
-                || contact.getMessage() == null
-                || contact.getMessage().isBlank()) {
+        // Ensure name input exists and fetch value, fallback to empty string if missing
+        const nameInput = document.getElementById("name") || document.querySelector('input[name="name"]');
+        const emailInput = document.getElementById("email") || document.querySelector('input[name="email"]');
+        const messageInput = document.getElementById("message") || document.querySelector('textarea[name="message"]');
 
-            return ResponseEntity.badRequest()
-                    .body("Please fill in all fields.");
+        const name = nameInput ? nameInput.value.trim() : "";
+        const email = emailInput ? emailInput.value.trim() : "";
+        const message = messageInput ? messageInput.value.trim() : "";
+
+        if (!name || !email || !message) {
+            if (formStatus) {
+                formStatus.textContent = "Please fill in all fields.";
+                formStatus.style.color = "red";
+            }
+            return;
+        }
+
+        const submitButton = contactForm.querySelector(
+            'button[type="submit"], input[type="submit"]'
+        );
+
+        if (submitButton) submitButton.disabled = true;
+
+        if (formStatus) {
+            formStatus.textContent = "Sending message...";
+            formStatus.style.color = "blue";
         }
 
         try {
-            ContactMessage saved = repository.save(contact);
+            const response = await fetch(
+                "https://portfolio-backend-1-i1cy.onrender.com/api/contact",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ name, email, message })
+                }
+            );
 
-            return ResponseEntity.status(HttpStatus.CREATED)
-                    .body("Message saved successfully. ID: " + saved.getId());
+            if (!response.ok) {
+                const errorDetails = await response.text();
+                console.error("API error:", response.status, errorDetails);
+                throw new Error(`HTTP ${response.status}`);
+            }
 
-        } catch (Exception e) {
-            // Actual error ko Render logs mein dekho.
-            System.err.println("Failed to save contact message:");
-            e.printStackTrace();
+            if (formStatus) {
+                formStatus.textContent = "Message sent successfully!";
+                formStatus.style.color = "green";
+            }
 
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Failed to save message. Check backend logs.");
+            alert("Message sent successfully!");
+            contactForm.reset();
+
+        } catch (error) {
+            console.error("Contact form error:", error);
+
+            if (formStatus) {
+                formStatus.textContent = error.message.startsWith("HTTP ")
+                    ? `Failed to send message (${error.message}).`
+                    : "Connection failed. Please check the backend and CORS settings.";
+                formStatus.style.color = "red";
+            }
+            alert("Connection failed. Render server might be waking up, please try again in 30 seconds.");
+
+        } finally {
+            if (submitButton) {
+                submitButton.disabled = false;
+            }
         }
-    }
+    });
 }
