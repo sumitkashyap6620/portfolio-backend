@@ -8,12 +8,8 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/contact")
-@CrossOrigin(origins = {
-        "http://127.0.0.1:5500",
-        "http://localhost:5500",
-        "http://127.0.0.1:5501",
-        "http://localhost:5501"
-})
+@CrossOrigin(origins = "*") // Ye sabhi domains (including your live Render frontend) ko allow kar dega
+public class ContactController {
 public class ContactController {
 
     private final ContactMessageRepository repository;
